@@ -1,18 +1,25 @@
-<script setup>
+<script>
+export default {
+
+}
 </script>
 
 <template>
   <div class="wrapper">
 
     <h1>Simon The Game</h1>
+
+
     <div class="game-board">
-      <div class="simon">
+      <div class="gaming-item">
+
         <ul>
-          <li class="tile red" data-tile="1"></li>
-          <li class="tile blue" data-tile="2"></li>
-          <li class="tile yellow" data-tile="3"></li>
-          <li class="tile green" data-tile="4"></li>
+          <li class="tile red" id="1"></li>
+          <li class="tile blue" id="2"></li>
+          <li class="tile yellow" id="3"></li>
+          <li class="tile green" id="4"></li>
         </ul>
+
       </div>
     </div>
 
@@ -23,16 +30,15 @@
     </div>
     <div class="game-options">
       <h2>Уровни игры:</h2>
-      <input type="radio" name="mode" value="casual" checked>Легкий уровень<br>
-      <input type="radio" name="mode" value="normal">Средний уровень<br>
-      <input type="radio" name="mode" value="hard">Сложный уровень<br>
+      <input type="radio" name="mode" value="casual" checked>Легкий<br>
+      <input type="radio" name="mode" value="normal">Средний<br>
+      <input type="radio" name="mode" value="hard">Сложный<br>
     </div>
-    <div data-action="sound"></div>
-
   </div>
 </template>
 
 <style scoped>
+
 ul {
   list-style: none;
 }
@@ -50,22 +56,12 @@ p[data-action="lose"] {
   opacity: 1 !important;
 }
 
-.clearfix {
-  width: 100%;
-  clear: both;
-}
-
-
 .wrapper {
   width: 540px;
   margin: 0 auto;
 }
 
-.container {
-  width: 305px;
-}
-
-.simon {
+.gaming-item {
   background: #fff;
   position: relative;
   float: left;
@@ -89,10 +85,6 @@ p[data-action="lose"] {
   transition: opacity 250ms ease;
 }
 
-.tile.lit {
-  opacity: 1;
-}
-
 .red, .blue, .yellow, .green {
   height: 290px;
   -webkit-border-radius: 150px 150px 150px 150px;
@@ -112,7 +104,7 @@ p[data-action="lose"] {
 }
 
 .blue {
-  background: dodgerblue;
+  background: #0082ff;
   clip: rect(0px, 150px, 150px, 0px);
   width: 300px;
 }
@@ -124,9 +116,37 @@ p[data-action="lose"] {
 }
 
 .green {
-  background: #BEDE15;
+  background: #61ff3d;
   clip: rect(150px, 300px, 300px, 150px);
   width: 296px;
+}
+
+.game-info {
+  margin-top: 90px;
+}
+
+.game-info button {
+  width: 5em;
+  box-sizing: border-box;
+  font-size: 1.4em;
+  -webkit-border-radius: 10px 10px 10px 10px;
+  border-radius: 10px 10px 10px 10px;
+  background: #8ce86d;
+  border: none;
+  padding: 0.3em 0.6em;
+}
+
+.game-info button:hover {
+  background: #82d367;
+}
+
+.game-options h2 {
+  margin-top: 30px;
+  margin-bottom: 0;
+}
+
+.game-options input[type="radio"] {
+  margin-right: 10px;
 }
 
 </style>
