@@ -1,6 +1,35 @@
 <script>
 export default {
+  data() {
+    return {
+      baseArray: [
+        'red',
+        'green',
+        'yellow',
+        'blue',
+      ],
+      count: 4,
+      activeArray: [],
+      userArray: [],
+      timer: 1500,
+      round: 0,
+    }
+  },
+  methods: {
+    onStart() {
+      this.round++;
+      this.activeArray = [];
 
+      for (let i = 0; i < this.count; i++) {
+        this.activeArray.push(this.baseArray[Math.floor(Math.random()*this.baseArray.length)]);
+      }
+
+      this.activeArray.forEach((value, index) => {
+        this.$refs[value].classList.add('active');
+        console.log(value, index);
+      })
+    }
+  }
 }
 </script>
 
@@ -9,24 +38,21 @@ export default {
 
     <h1>Simon The Game</h1>
 
-
     <div class="game-board">
       <div class="gaming-item">
-
         <ul>
-          <li class="tile red" id="1"></li>
-          <li class="tile blue" id="2"></li>
-          <li class="tile yellow" id="3"></li>
-          <li class="tile green" id="4"></li>
+          <li class="tile red" ref="red"></li>
+          <li class="tile green" ref="green"></li>
+          <li class="tile yellow" ref="yellow"></li>
+          <li class="tile blue" ref="blue"></li>
         </ul>
-
       </div>
     </div>
 
     <div class="game-info">
-      <h2>Раунд: <span data-round="0">0</span></h2>
-      <button data-action="start">Старт</button>
-      <p data-action="lose">Извините, вы проиграли после <span data-round="0"></span> раундов!</p>
+      <h2>Раунд: <span>{{round}}</span></h2>
+      <button v-on:click='onStart'>Старт</button>
+      <p data-action="lose">Извините, вы проиграли (</p>
     </div>
     <div class="game-options">
       <h2>Уровни игры:</h2>
