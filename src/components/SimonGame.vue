@@ -1,0 +1,132 @@
+<script setup>
+</script>
+
+<template>
+  <div class="wrapper">
+
+    <h1>Simon The Game</h1>
+    <div class="game-board">
+      <div class="simon">
+        <ul>
+          <li class="tile red" data-tile="1"></li>
+          <li class="tile blue" data-tile="2"></li>
+          <li class="tile yellow" data-tile="3"></li>
+          <li class="tile green" data-tile="4"></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="game-info">
+      <h2>Раунд: <span data-round="0">0</span></h2>
+      <button data-action="start">Старт</button>
+      <p data-action="lose">Извините, вы проиграли после <span data-round="0"></span> раундов!</p>
+    </div>
+    <div class="game-options">
+      <h2>Уровни игры:</h2>
+      <input type="radio" name="mode" value="casual" checked>Легкий уровень<br>
+      <input type="radio" name="mode" value="normal">Средний уровень<br>
+      <input type="radio" name="mode" value="hard">Сложный уровень<br>
+    </div>
+    <div data-action="sound"></div>
+
+  </div>
+</template>
+
+<style scoped>
+ul {
+  list-style: none;
+}
+
+ul, li {
+  padding: 0;
+  margin: 0;
+}
+
+p[data-action="lose"] {
+  display: none;
+}
+
+.active {
+  opacity: 1 !important;
+}
+
+.clearfix {
+  width: 100%;
+  clear: both;
+}
+
+
+.wrapper {
+  width: 540px;
+  margin: 0 auto;
+}
+
+.container {
+  width: 305px;
+}
+
+.simon {
+  background: #fff;
+  position: relative;
+  float: left;
+  margin-right: 3em;
+  width: 302px;
+  height: 295px;
+  -webkit-border-radius: 150px 150px 150px 150px;
+  border-radius: 150px 150px 150px 150px;
+  -moz-box-shadow: 2px 1px 12px #aaa;
+  -webkit-box-shadow: 2px 1px 12px #aaa;
+  -o-box-shadow: 2px 1px 12px #aaa;
+  box-shadow: 2px 1px 12px #aaa;
+}
+
+.tile {
+  opacity: 0.6;
+  -webkit-transition: opacity 250ms ease;
+  -moz-transition: opacity 250ms ease;
+  -ms-transition: opacity 250ms ease;
+  -o-transition: opacity 250ms ease;
+  transition: opacity 250ms ease;
+}
+
+.tile.lit {
+  opacity: 1;
+}
+
+.red, .blue, .yellow, .green {
+  height: 290px;
+  -webkit-border-radius: 150px 150px 150px 150px;
+  border-radius: 150px 150px 150px 150px;
+  position: absolute;
+  text-indent: 10000px;
+}
+
+.red:hover, .blue:hover, .yellow:hover, .green:hover {
+  border: 2px solid black
+}
+
+.red {
+  background: #FF5643;
+  clip: rect(0px, 300px, 150px, 150px);
+  width: 296px;
+}
+
+.blue {
+  background: dodgerblue;
+  clip: rect(0px, 150px, 150px, 0px);
+  width: 300px;
+}
+
+.yellow {
+  background: #FEEF33;
+  clip: rect(150px, 150px, 300px, 0px);
+  width: 300px;
+}
+
+.green {
+  background: #BEDE15;
+  clip: rect(150px, 300px, 300px, 150px);
+  width: 296px;
+}
+
+</style>
