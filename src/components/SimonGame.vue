@@ -2,34 +2,88 @@
 export default {
   data() {
     return {
+      activeArray: [],
       baseArray: [
         'red',
         'green',
         'yellow',
         'blue',
       ],
+      startButton: "Старт",
       count: 4,
-      activeArray: [],
-      userArray: [],
-      timer: 1500,
+      gameStatusDefault: false,
+      gameStatusOnStart: false,
+      gameStatusUser: false,
+      interval: 1000,
       round: 0,
+      sequenceInterval: null,
+      strict: false,
+      timerCasual: 1500,
+      timerNormal: 1000,
+      timerHard: 400,
+      userArray: [],
+      difficultyLevel: 'casual',
     }
   },
+
+  computed: {
+    // showRound() {
+    //   return this.round;
+    // }
+  },
+
+  watch: {
+    // if strict changes in middle of game, reset it
+    strict() {
+      this.onStart();
+    }
+  },
+
   methods: {
     onStart() {
-      this.round++;
+      this.gameStatusOnStart = true;
+      this.startButton = "Заново";
+      this.round = 1;
       this.activeArray = [];
+      this.userArray = [];
+      clearInterval(this.sequenceInterval)
 
       for (let i = 0; i < this.count; i++) {
-        this.activeArray.push(this.baseArray[Math.floor(Math.random()*this.baseArray.length)]);
+        this.activeArray.push(this.baseArray[Math.floor(Math.random() * this.baseArray.length)]);
       }
 
-      this.activeArray.forEach((value, index) => {
-        this.$refs[value].classList.add('active');
-        console.log(value, index);
-      })
-    }
-  }
+      let currentIndex = 0;
+      this.sequenceInterval = setInterval(() => {
+        if (currentIndex >= this.activeArray.length) {
+          clearInterval(this.sequenceInterval);
+          return;
+        }
+        console.log(this.activeArray[currentIndex]);
+        this.lightUp(this.$refs[this.activeArray[currentIndex]]);
+        currentIndex++;
+      }, this.selectTimer());
+    },
+
+    lightUp(tile) {
+      tile.classList.add('active');
+      setTimeout(() => {
+        tile.classList.remove('active');
+      }, 300);
+    },
+
+    selectTimer() {
+      switch (this.difficultyLevel) {
+        case 'casual':
+          console.log(this.timerCasual)
+          return this.timerCasual;
+        case 'normal':
+          return this.timerNormal;
+        case 'hard':
+          return this.timerHard;
+      }
+    },
+
+  },
 }
 </script>
 
@@ -50,16 +104,18 @@ export default {
     </div>
 
     <div class="game-info">
-      <h2>Раунд: <span>{{round}}</span></h2>
-      <button v-on:click='onStart'>Старт</button>
+      <h2>Раунд: <span>{{ round }}</span></h2>
+      <button v-on:click='onStart'>{{ startButton }}</button>
       <p data-action="lose">Извините, вы проиграли (</p>
     </div>
     <div class="game-options">
       <h2>Уровни игры:</h2>
-      <input type="radio" name="mode" value="casual" checked>Легкий<br>
-      <input type="radio" name="mode" value="normal">Средний<br>
-      <input type="radio" name="mode" value="hard">Сложный<br>
+      <input type="radio" name="mode" value='casual' v-model="difficultyLevel" required>Легкий<br>
+      <input type="radio" name="mode" value='normal' v-model="difficultyLevel" required>Средний<br>
+      <input type="radio" name="mode" value='hard' v-model="difficultyLevel" required>Сложный<br>
     </div>
+    <span>check: {{ difficultyLevel }}</span>
+
   </div>
 </template>
 
