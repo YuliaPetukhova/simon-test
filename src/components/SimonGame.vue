@@ -23,6 +23,11 @@ export default {
       timerHard: 400,
       userArray: [],
       difficultyLevel: 'casual',
+      difficultyLevels: {
+        casual: 'casual',
+        normal: 'normal',
+        hard: 'hard',
+      }
     }
   },
 
@@ -73,12 +78,12 @@ export default {
 
     selectTimer() {
       switch (this.difficultyLevel) {
-        case 'casual':
+        case this.difficultyLevels.casual:
           console.log(this.timerCasual)
           return this.timerCasual;
-        case 'normal':
+        case this.difficultyLevels.normal:
           return this.timerNormal;
-        case 'hard':
+        case this.difficultyLevels.hard:
           return this.timerHard;
       }
     },
