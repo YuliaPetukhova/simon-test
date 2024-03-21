@@ -9,48 +9,52 @@ export default {
         'yellow',
         'blue',
       ],
-      startButton: "Старт",
       count: 4,
-      gameStatusDefault: false,
-      gameStatusOnStart: false,
-      gameStatusUser: false,
-      interval: 1000,
-      round: 0,
-      sequenceInterval: null,
-      strict: false,
-      timerCasual: 1500,
-      timerNormal: 1000,
-      timerHard: 400,
-      userArray: [],
       difficultyLevel: 'casual',
       difficultyLevels: {
         casual: 'casual',
         normal: 'normal',
         hard: 'hard',
-      }
+      },
+      gameStatusDefault: false,
+      gameStatusOnStart: false,
+      gameStatusUser: false,
+      interval: 1000,
+      isClickable: false,
+      round: 0,
+      sequenceInterval: null,
+      startButton: "Старт",
+      strict: false,
+      timerCasual: 1500,
+      timerHard: 400,
+      timerNormal: 1000,
+      userArray: []
     }
   },
 
   computed: {
     // showRound() {
+    //   if (this.isWon) {
+    //     return "Play Again?";
+    //   }
     //   return this.round;
     // }
   },
 
   watch: {
     // if strict changes in middle of game, reset it
-    strict() {
-      this.onStart();
-    }
+    // strict() {
+    //   this.onStart();
+    // }
   },
 
   methods: {
     onStart() {
       this.gameStatusOnStart = true;
-      this.startButton = "Заново";
-      this.round = 1;
       this.activeArray = [];
       this.userArray = [];
+      this.startButton = "Заново";
+      this.round = 0;
       clearInterval(this.sequenceInterval)
 
       for (let i = 0; i < this.count; i++) {
@@ -76,10 +80,10 @@ export default {
       }, 300);
     },
 
+
     selectTimer() {
       switch (this.difficultyLevel) {
         case this.difficultyLevels.casual:
-          console.log(this.timerCasual)
           return this.timerCasual;
         case this.difficultyLevels.normal:
           return this.timerNormal;
@@ -119,8 +123,6 @@ export default {
       <input type="radio" name="mode" value='normal' v-model="difficultyLevel" required>Средний<br>
       <input type="radio" name="mode" value='hard' v-model="difficultyLevel" required>Сложный<br>
     </div>
-    <span>check: {{ difficultyLevel }}</span>
-
   </div>
 </template>
 
@@ -144,7 +146,7 @@ p[data-action="lose"] {
 }
 
 .wrapper {
-  width: 540px;
+  width: 33.75em;
   margin: 0 auto;
 }
 
@@ -153,14 +155,14 @@ p[data-action="lose"] {
   position: relative;
   float: left;
   margin-right: 3em;
-  width: 302px;
-  height: 295px;
-  -webkit-border-radius: 150px 150px 150px 150px;
-  border-radius: 150px 150px 150px 150px;
-  -moz-box-shadow: 2px 1px 12px #aaa;
-  -webkit-box-shadow: 2px 1px 12px #aaa;
-  -o-box-shadow: 2px 1px 12px #aaa;
-  box-shadow: 2px 1px 12px #aaa;
+  width: 18.9em;
+  height: 18.5em;
+  -webkit-border-radius: 9.4em 9.4em;
+  border-radius: 9.4em 9.4em;
+  -moz-box-shadow: 0.125em 0.063em 0.75em #aaa;
+  -webkit-box-shadow: 0.125em 0.063em 0.75em #aaa;
+  -o-box-shadow: 0.125em 0.063em 0.75em #aaa;
+  box-shadow: 0.125em 0.063em 0.75em #aaa;
 }
 
 .tile {
@@ -173,51 +175,51 @@ p[data-action="lose"] {
 }
 
 .red, .blue, .yellow, .green {
-  height: 290px;
-  -webkit-border-radius: 150px 150px 150px 150px;
-  border-radius: 150px 150px 150px 150px;
+  height: 18.125em;
+  -webkit-border-radius: 9.4em 9.4em;
+  border-radius: 9.4em 9.4em;
   position: absolute;
-  text-indent: 10000px;
+  text-indent: 625em;
 }
 
 .red:hover, .blue:hover, .yellow:hover, .green:hover {
-  border: 2px solid black
+  border: 0.125em solid black
 }
 
 .red {
   background: #FF5643;
-  clip: rect(0px, 300px, 150px, 150px);
-  width: 296px;
+  clip: rect(0px, 18.75em, 9.4em, 9.4em);
+  width: 18.5em;
 }
 
 .blue {
   background: #0082ff;
-  clip: rect(0px, 150px, 150px, 0px);
-  width: 300px;
+  clip: rect(0em, 9.4em, 9.4em, 0em);
+  width: 18.75em;
 }
 
 .yellow {
   background: #FEEF33;
-  clip: rect(150px, 150px, 300px, 0px);
-  width: 300px;
+  clip: rect(9.4em, 9.4em, 18.75em, 0px);
+  width: 18.75em;
 }
 
 .green {
   background: #61ff3d;
-  clip: rect(150px, 300px, 300px, 150px);
-  width: 296px;
+  clip: rect(9.4em, 18.75em, 18.75em, 9.4em);
+  width: 18.5em;
 }
 
 .game-info {
-  margin-top: 90px;
+  margin-top: 5.625em;
 }
 
 .game-info button {
   width: 5em;
   box-sizing: border-box;
   font-size: 1.4em;
-  -webkit-border-radius: 10px 10px 10px 10px;
-  border-radius: 10px 10px 10px 10px;
+  -webkit-border-radius: 0.625em 0.625em 0.625em 0.625em;
+  border-radius: 0.625em 0.625em 0.625em 0.625em;
   background: #8ce86d;
   border: none;
   padding: 0.3em 0.6em;
@@ -228,12 +230,12 @@ p[data-action="lose"] {
 }
 
 .game-options h2 {
-  margin-top: 30px;
+  margin-top: 1.875em;
   margin-bottom: 0;
 }
 
 .game-options input[type="radio"] {
-  margin-right: 10px;
+  margin-right: 0.625em;
 }
 
 </style>
