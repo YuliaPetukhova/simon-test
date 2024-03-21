@@ -2,60 +2,82 @@
 export default {
   data() {
     return {
-      activeArray: [],
       baseArray: [
         'red',
         'green',
         'yellow',
         'blue',
       ],
-      count: 4,
+      activeArray: [],
+      userArray: [],
+
       difficultyLevel: 'casual',
       difficultyLevels: {
         casual: 'casual',
         normal: 'normal',
         hard: 'hard',
       },
-      gameStatusDefault: false,
-      gameStatusOnStart: false,
-      gameStatusUser: false,
-      interval: 1000,
+      gameStatusDefault: true,
+      gameStatusFlashing: false,
+      gameStatusAnswer: false,
       isClickable: false,
-      round: 0,
+      interval: 1000,
       sequenceInterval: null,
+      count: 0,
+      round: 0,
       startButton: "Старт",
-      strict: false,
+      isWon: false,
+      isWrong: false,
       timerCasual: 1500,
       timerHard: 400,
-      timerNormal: 1000,
-      userArray: []
+      timerNormal: 1000
     }
   },
 
-  computed: {
-    // showRound() {
-    //   if (this.isWon) {
-    //     return "Play Again?";
-    //   }
-    //   return this.round;
-    // }
-  },
-
-  watch: {
-    // if strict changes in middle of game, reset it
-    // strict() {
-    //   this.onStart();
-    // }
-  },
-
   methods: {
-    onStart() {
-      this.gameStatusOnStart = true;
+    toDefaultState() {
+      this.round = 0;
+      this.count = 0;
+
+      this.startButton = "Заново";
+      clearInterval(this.sequenceInterval);
+
+      this.gameStatusDefault = true;
+      this.gameStatusFlashing = false;
+      this.gameStatusAnswer = false;
+    },
+    toFlashingState() {
       this.activeArray = [];
       this.userArray = [];
-      this.startButton = "Заново";
-      this.round = 0;
-      clearInterval(this.sequenceInterval)
+      this.round++;
+      this.count++;
+
+      this.gameStatusDefault = false;
+      this.gameStatusFlashing = true;
+      this.gameStatusAnswer = false;
+    },
+    toAnswerState() {
+      this.gameStatusDefault = false;
+      this.gameStatusFlashing = false;
+      this.gameStatusAnswer = true;
+    },
+    isDefaultState() {
+      return this.gameStatusDefault;
+    },
+    isFlashingState() {
+      return this.gameStatusFlashing;
+    },
+    isAnswerState() {
+      return this.gameStatusAnswer;
+    },
+    onStart() {
+      this.toDefaultState();
+
+      this.startRound();
+    },
+
+    startRound() {
+      this.toFlashingState();
 
       for (let i = 0; i < this.count; i++) {
         this.activeArray.push(this.baseArray[Math.floor(Math.random() * this.baseArray.length)]);
@@ -67,10 +89,33 @@ export default {
           clearInterval(this.sequenceInterval);
           return;
         }
-        console.log(this.activeArray[currentIndex]);
         this.lightUp(this.$refs[this.activeArray[currentIndex]]);
         currentIndex++;
       }, this.selectTimer());
+
+      this.toAnswerState();
+    },
+
+    onUserClick(tile) {
+      if (this.isAnswerState()) {
+        this.lightUp(this.$refs[tile]);
+        this.userArray.push(tile);
+        this.checkWinLose();
+      }
+    },
+
+    checkWinLose() {
+      for (let i = 0; i < this.userArray.length; i++) {
+        if (this.userArray[i] !== this.activeArray[i]) {
+          alert('ошибка');
+          this.toDefaultState();
+          break;
+        }
+      }
+
+      if (this.userArray.length === this.activeArray.length) {
+        this.startRound();
+      }
     },
 
     lightUp(tile) {
@@ -79,7 +124,6 @@ export default {
         tile.classList.remove('active');
       }, 300);
     },
-
 
     selectTimer() {
       switch (this.difficultyLevel) {
@@ -91,7 +135,6 @@ export default {
           return this.timerHard;
       }
     },
-
   },
 }
 </script>
@@ -104,10 +147,10 @@ export default {
     <div class="game-board">
       <div class="gaming-item">
         <ul>
-          <li class="tile red" ref="red"></li>
-          <li class="tile green" ref="green"></li>
-          <li class="tile yellow" ref="yellow"></li>
-          <li class="tile blue" ref="blue"></li>
+          <li class="tile red" ref="red" @click="onUserClick('red')"></li>
+          <li class="tile green" ref="green" @click="onUserClick('green')"></li>
+          <li class="tile yellow" ref="yellow" @click="onUserClick('yellow')"></li>
+          <li class="tile blue" ref="blue" @click="onUserClick('blue')"></li>
         </ul>
       </div>
     </div>
