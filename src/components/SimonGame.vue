@@ -1,4 +1,5 @@
 <script>
+
 const { Howl } = require('howler');
 export default {
   data() {
