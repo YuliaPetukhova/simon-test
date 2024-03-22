@@ -1,15 +1,31 @@
 <script>
+const { Howl } = require('howler');
 export default {
   data() {
     return {
-      baseArray: [
+      baseSequence: [
         'red',
         'green',
         'yellow',
         'blue',
       ],
-      activeArray: [],
-      userArray: [],
+      flashingSequence: [],
+      userSequence: [],
+
+      sounds: {
+        'red': new Howl({
+          src: ['/sounds/redSound2.mp3']
+        }),
+        'green': new Howl({
+          src: ['/sounds/greenSound1.mp3']
+        }),
+        'yellow': new Howl({
+          src: ['/sounds/yellowSound3.mp3']
+        }),
+        'blue': new Howl({
+          src: ['/sounds/blueSound4.mp3']
+        })
+      },
 
       difficultyLevel: 'casual',
       difficultyLevels: {
@@ -17,20 +33,20 @@ export default {
         normal: 'normal',
         hard: 'hard',
       },
+
       gameStatusDefault: true,
       gameStatusFlashing: false,
       gameStatusAnswer: false,
-      isClickable: false,
-      interval: 1000,
+
       sequenceInterval: null,
       count: 0,
       round: 0,
-      startButton: "Старт",
-      isWon: false,
-      isWrong: false,
+      finalRound: 5,
+      startButton: 'Старт',
+
       timerCasual: 1500,
       timerHard: 400,
-      timerNormal: 1000
+      timerNormal: 1000,
     }
   },
 
@@ -39,16 +55,17 @@ export default {
       this.round = 0;
       this.count = 0;
 
-      this.startButton = "Заново";
+      this.startButton = 'Заново';
       clearInterval(this.sequenceInterval);
 
       this.gameStatusDefault = true;
       this.gameStatusFlashing = false;
       this.gameStatusAnswer = false;
     },
+
     toFlashingState() {
-      this.activeArray = [];
-      this.userArray = [];
+      this.flashingSequence = [];
+      this.userSequence = [];
       this.round++;
       this.count++;
 
@@ -56,20 +73,21 @@ export default {
       this.gameStatusFlashing = true;
       this.gameStatusAnswer = false;
     },
+
     toAnswerState() {
       this.gameStatusDefault = false;
       this.gameStatusFlashing = false;
       this.gameStatusAnswer = true;
     },
-    isDefaultState() {
-      return this.gameStatusDefault;
-    },
-    isFlashingState() {
-      return this.gameStatusFlashing;
-    },
+
     isAnswerState() {
       return this.gameStatusAnswer;
     },
+
+    onChangeLevel() {
+      this.toDefaultState();
+    },
+
     onStart() {
       this.toDefaultState();
 
@@ -80,16 +98,17 @@ export default {
       this.toFlashingState();
 
       for (let i = 0; i < this.count; i++) {
-        this.activeArray.push(this.baseArray[Math.floor(Math.random() * this.baseArray.length)]);
+        this.flashingSequence.push(this.baseSequence[Math.floor(Math.random() * this.baseSequence.length)]);
       }
 
       let currentIndex = 0;
       this.sequenceInterval = setInterval(() => {
-        if (currentIndex >= this.activeArray.length) {
+        if (currentIndex >= this.flashingSequence.length) {
           clearInterval(this.sequenceInterval);
           return;
         }
-        this.lightUp(this.$refs[this.activeArray[currentIndex]]);
+        this.playSound(this.flashingSequence[currentIndex]);
+        this.lightUp(this.$refs[this.flashingSequence[currentIndex]]);
         currentIndex++;
       }, this.selectTimer());
 
@@ -98,23 +117,29 @@ export default {
 
     onUserClick(tile) {
       if (this.isAnswerState()) {
+        this.playSound(tile);
         this.lightUp(this.$refs[tile]);
-        this.userArray.push(tile);
+        this.userSequence.push(tile);
         this.checkWinLose();
       }
     },
 
     checkWinLose() {
-      for (let i = 0; i < this.userArray.length; i++) {
-        if (this.userArray[i] !== this.activeArray[i]) {
-          alert('ошибка');
+      for (let i = 0; i < this.userSequence.length; i++) {
+        if (this.userSequence[i] !== this.flashingSequence[i]) {
+          alert('Вы проиграли');
           this.toDefaultState();
           break;
         }
       }
 
-      if (this.userArray.length === this.activeArray.length) {
+      if (this.userSequence.length === this.flashingSequence.length) {
         this.startRound();
+      }
+
+      if(this.round === this.finalRound){
+        alert('Вы выиграли');
+        this.toDefaultState();
       }
     },
 
@@ -125,12 +150,19 @@ export default {
       }, 300);
     },
 
+    playSound(tile) {
+      this.sounds[tile].play();
+    },
+
     selectTimer() {
       switch (this.difficultyLevel) {
+
         case this.difficultyLevels.casual:
           return this.timerCasual;
+
         case this.difficultyLevels.normal:
           return this.timerNormal;
+
         case this.difficultyLevels.hard:
           return this.timerHard;
       }
@@ -157,14 +189,13 @@ export default {
 
     <div class="game-info">
       <h2>Раунд: <span>{{ round }}</span></h2>
-      <button v-on:click='onStart'>{{ startButton }}</button>
-      <p data-action="lose">Извините, вы проиграли (</p>
+      <button @click='onStart'>{{ startButton }}</button>
     </div>
     <div class="game-options">
       <h2>Уровни игры:</h2>
-      <input type="radio" name="mode" value='casual' v-model="difficultyLevel" required>Легкий<br>
-      <input type="radio" name="mode" value='normal' v-model="difficultyLevel" required>Средний<br>
-      <input type="radio" name="mode" value='hard' v-model="difficultyLevel" required>Сложный<br>
+      <input type="radio" name="mode" value='casual' @click='onChangeLevel' v-model="difficultyLevel" required>Легкий<br>
+      <input type="radio" name="mode" value='normal' @click='onChangeLevel' v-model="difficultyLevel" required>Средний<br>
+      <input type="radio" name="mode" value='hard' @click='onChangeLevel' v-model="difficultyLevel" required>Сложный<br>
     </div>
   </div>
 </template>
@@ -178,10 +209,6 @@ ul {
 ul, li {
   padding: 0;
   margin: 0;
-}
-
-p[data-action="lose"] {
-  display: none;
 }
 
 .active {
