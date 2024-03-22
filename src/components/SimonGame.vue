@@ -47,6 +47,7 @@ export default {
       timerCasual: 1500,
       timerHard: 400,
       timerNormal: 1000,
+      lightUpTimeout: 300,
     }
   },
 
@@ -147,7 +148,7 @@ export default {
       tile.classList.add('active');
       setTimeout(() => {
         tile.classList.remove('active');
-      }, 300);
+      }, this.lightUpTimeout);
     },
 
     playSound(tile) {
