@@ -42,7 +42,6 @@ export default {
       sequenceInterval: null,
       count: 0,
       round: 0,
-      finalRound: 5,
       startButton: 'Старт',
 
       timerCasual: 1500,
@@ -137,11 +136,6 @@ export default {
 
       if (this.userSequence.length === this.flashingSequence.length) {
         this.startRound();
-      }
-
-      if(this.round === this.finalRound){
-        alert('Вы выиграли');
-        this.toDefaultState();
       }
     },
 
